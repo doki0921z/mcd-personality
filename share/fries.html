@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <base href="../">
+  <meta charset="UTF-8">
+  <title>我是麦当劳薯条｜麦麦人格研究所</title>
+  <meta name="description" content="人间快乐充电宝：快乐这件事，就是要趁热分享呀。 5 道题，测测你是哪一款麦麦快乐。">
+  <link rel="canonical" href="https://doki0921z.github.io/mcd-personality/share/fries.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="我是麦当劳薯条｜麦麦人格研究所">
+  <meta property="og:description" content="人间快乐充电宝：快乐这件事，就是要趁热分享呀。 5 道题，测测你是哪一款麦麦快乐。">
+  <meta property="og:url" content="https://doki0921z.github.io/mcd-personality/share/fries.html">
+  <meta property="og:image" content="https://doki0921z.github.io/mcd-personality/assets/cards/fries.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1440">
+  <meta property="og:image:alt" content="麦当劳薯条像素快乐人格卡">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="我是麦当劳薯条｜麦麦人格研究所">
+  <meta name="twitter:description" content="人间快乐充电宝：快乐这件事，就是要趁热分享呀。 5 道题，测测你是哪一款麦麦快乐。">
+  <meta name="twitter:image" content="https://doki0921z.github.io/mcd-personality/assets/cards/fries.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff9e9">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./assets/qrcode.js"></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="site-wrap">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="麦麦人格研究所首页"><span class="brand-icon" aria-hidden="true">m<span>✦</span></span><span>麦麦人格研究所<small>HAPPY MEAL, HAPPY ME.</small></span></a>
+      <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="true" aria-label="关闭音效"><span id="sound-icon" aria-hidden="true">♫</span><span id="sound-label">音效开</span></button>
+    </header>
+    <main id="app" tabindex="-1"></main>
+    <footer class="site-footer"><span class="tiny-heart" aria-hidden="true">♥</span> 快乐不止一种口味 <span aria-hidden="true">·</span> 做自己就很好<br><small>非官方趣味创作，与麦当劳品牌无关联。仅供娱乐，不构成心理测评。</small></footer>
+  </div>
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="share-head"><div><span class="eyebrow">YOUR HAPPY CARD</span><h2 id="share-title">把快乐，打包带走</h2></div><button type="button" class="close-dialog" aria-label="关闭分享窗口">×</button></div>
+    <div id="poster-status" role="status">正在打包你的快乐…</div>
+    <img id="share-image" alt="你的麦麦人格结果分享图，含人格介绍和测试二维码" hidden>
+    <p class="save-hint">长按上方图片，选择「保存图片」</p>
+    <div class="share-actions"><button type="button" id="download-poster" class="button primary">↓ 保存快乐卡</button><button type="button" id="native-share" class="button secondary" hidden>系统分享图片 ↗</button></div>
+    <p id="share-feedback" class="share-feedback" role="status" aria-live="polite" hidden></p>
+    <a id="open-poster" class="text-button open-poster" target="_blank" rel="noopener">打开原图，长按保存 ↗</a>
+    <div class="wechat-steps"><p><strong>发给朋友</strong>　保存图片 → 微信聊天 → 相册发送</p><p><strong>发朋友圈</strong>　保存图片 → 朋友圈 → 从相册选择</p></div>
+    <button type="button" id="copy-link" class="text-button">复制结果链接 ↗</button>
+    <input id="share-url" class="share-url" aria-label="结果链接，可长按复制" readonly hidden>
+    <p class="wechat-note">网页链接能否转发取决于微信和当前域名状态；也可以保存快乐卡后发送图片。</p>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript>这个小测试需要启用 JavaScript，才能完成答题和生成分享图。</noscript>
+</body>
+</html>

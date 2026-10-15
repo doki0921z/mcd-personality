@@ -7,6 +7,12 @@
   <meta name="description" content="叮！你的快乐订单已送达。回答5个小问题，找到你的麦当劳人格，领取专属像素快乐卡。">
   <meta property="og:title" content="麦麦人格研究所｜你是哪一款快乐？">
   <meta property="og:description" content="5个小问题，8款快乐人格。来认领你的像素快乐卡！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://doki0921z.github.io/mcd-personality/">
+  <meta property="og:image" content="https://doki0921z.github.io/mcd-personality/assets/cards/fries.png">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="1440">
+  <meta name="twitter:card" content="summary_large_image">
   <title>麦麦人格研究所 · 你是哪一款快乐？</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
@@ -26,10 +32,14 @@
     <div class="share-head"><div><span class="eyebrow">YOUR HAPPY CARD</span><h2 id="share-title">把快乐，打包带走</h2></div><button type="button" class="close-dialog" aria-label="关闭分享窗口">×</button></div>
     <div id="poster-status" role="status">正在打包你的快乐…</div>
     <img id="share-image" alt="你的麦麦人格结果分享图，含人格介绍和测试二维码" hidden>
-    <p class="save-hint">长按图片保存，再发给微信好友或朋友圈</p>
-    <div class="share-actions"><button type="button" id="download-poster" class="button primary">↓ 保存快乐卡</button><button type="button" id="native-share" class="button secondary" hidden>分享图片 ↗</button></div>
+    <p class="save-hint">长按上方图片，选择「保存图片」</p>
+    <div class="share-actions"><button type="button" id="download-poster" class="button primary">↓ 保存快乐卡</button><button type="button" id="native-share" class="button secondary" hidden>系统分享图片 ↗</button></div>
+    <p id="share-feedback" class="share-feedback" role="status" aria-live="polite" hidden></p>
+    <a id="open-poster" class="text-button open-poster" target="_blank" rel="noopener">打开原图，长按保存 ↗</a>
+    <div class="wechat-steps"><p><strong>发给朋友</strong>　保存图片 → 微信聊天 → 相册发送</p><p><strong>发朋友圈</strong>　保存图片 → 朋友圈 → 从相册选择</p></div>
     <button type="button" id="copy-link" class="text-button">复制结果链接 ↗</button>
-    <p class="wechat-note">微信里可长按上方图片保存，或点右上角「…」分享网页。</p>
+    <input id="share-url" class="share-url" aria-label="结果链接，可长按复制" readonly hidden>
+    <p class="wechat-note">网页链接能否转发取决于微信和当前域名状态；也可以保存快乐卡后发送图片。</p>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <noscript>这个小测试需要启用 JavaScript，才能完成答题和生成分享图。</noscript>

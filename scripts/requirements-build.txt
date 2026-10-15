@@ -1,0 +1,4 @@
+fonttools>=4.60,<5
+brotli>=1.1,<2
+Pillow>=11,<13
+qrcode>=8,<9
