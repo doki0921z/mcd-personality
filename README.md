@@ -6,7 +6,7 @@
 
 ## 使用与部署
 
-纯 HTML / CSS / JavaScript，无需构建、后端、数据库或 API Key。运行 `python -m http.server 8765 --bind 127.0.0.1` 后，通过 `http://dev.mihoyo.com:8765` 预览。该域名需解析到 127.0.0.1。
+纯 HTML / CSS / JavaScript，网页运行无需构建、后端或数据库，访客无需提供 API Key。运行 `python -m http.server 8765 --bind 127.0.0.1` 后，通过 `http://dev.mihoyo.com:8765` 预览。该域名需解析到 127.0.0.1。
 
 GitHub Pages：Settings → Pages → Deploy from a branch → main → / (root)。仓库包含 `.nojekyll`。
 
@@ -17,6 +17,14 @@ GitHub Pages：Settings → Pages → Deploy from a branch → main → / (root)
 每种人格都有 `share/<id>.html` 独立结果页，包含对应的静态标题、描述和 HTTPS 分享图元信息。答题结束后同步浏览器结果地址。通用网页元信息不代表已获微信自定义分享权限；本项目未接入微信公众号 JS-SDK、公众号安全域名或签名服务，微信菜单能否转发还取决于客户端和域名状态。
 
 结果链接 `share/fries.html` 只包含人格标识，打开会展示朋友的人格卡，并提供重新测试入口；兼容旧链接 `?r=fries`。答题数据仅在当前页面内存中计算，无账号、无埋点、无上传。
+
+## 麦当劳公开资料与点餐
+
+结果页的“快乐加餐站”展示对应餐品的营养参考值，以及麦麦活动日历。资料由维护者通过麦当劳官方 MCP 的 `list-nutrition-foods` 和 `campaign-calendar` 工具本地同步至 `assets/mcd-public-data.json`，页面标注更新时间。这是同步时的记录，不是实时接口；跨月后标为活动回顾。
+
+更新资料时，在本地环境变量中提供 `MCD_MCP_TOKEN`，运行 `python scripts/sync-mcd-data.py`。脚本只允许上述两个只读工具，仅发布筛选后的公共营养和日历字段，不发布订阅状态、优惠券码、账户信息或原始响应。任一查询失败时保留上次资料。令牌不保存到网页源码、浏览器或仓库；不要把令牌写进命令示例或配置文件后提交。
+
+“立刻下单”跳转到 `https://mcd.cn/` 麦当劳官方点餐，访客在那里登录、选择门店和餐品、确认订单并付款。本站不代下单，也不收集登录信息。此入口不向官方页面预填购物车。营养资料、日历及点餐入口均不进入原有分享海报。
 
 ## 验证
 

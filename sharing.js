@@ -12,6 +12,11 @@ export function cardURL(base,id){
   return new URL(`assets/cards/${id}.png`,base).href;
 }
 
+export function thumbnailURL(base,id){
+  if(id&&!getProfile(id))throw new Error('未知的人格结果');
+  return new URL(`assets/share-icons/${id||'home'}-v1.png`,base).href;
+}
+
 export function sharedProfile(url){
   const parsed=new URL(url);
   const legacy=getProfile(parsed.searchParams.get('r'));

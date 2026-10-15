@@ -4,9 +4,11 @@ Run from any directory with Python 3.12 and Node on PATH. Optional packages live
 only in .build/vendor; the deployed site remains dependency-free.
 Original sprite rectangles, profile copy, and the licensed HappyPixel font are
 read directly from the site. Existing third-party license files are untouched.
+Use --metadata-only to refresh thumbnails and HTML without writing share posters.
 """
 from __future__ import annotations
 
+import argparse
 import html
 import io
 import json
@@ -47,6 +49,20 @@ def load_font() -> bytes:
     buffer = io.BytesIO()
     font.save(buffer)
     return buffer.getvalue()
+
+
+def make_thumbnail(sprite: list, target: Path) -> None:
+    """A separate, lightweight square image for link previews and the brand."""
+    image = Image.new("RGB", (320, 320), "#fff6dc")
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((12, 12, 307, 307), fill="#fffdf3", outline=INK, width=4)
+    for x in range(24, 296, 16):
+        for y in range(24, 296, 16):
+            if ((x - 24) // 16 + (y - 24) // 16) % 2 == 0:
+                draw.rectangle((x, y, x + 15, y + 15), fill="#fff0cb")
+    for x, y, width, height, color in sprite:
+        draw.rectangle((32 + x * 8, 32 + y * 8, 32 + (x + width) * 8 - 1, 32 + (y + height) * 8 - 1), fill=color)
+    image.save(target, "PNG", optimize=True)
 
 
 def make_poster(profile: dict, sprite: list, font_bytes: bytes, target: Path) -> None:
@@ -142,7 +158,10 @@ def result_html(source: str, profile: dict) -> str:
     title = f"我是{profile['name']}｜麦麦人格研究所"
     description = f"{profile['role']}：{profile['quote']} 5 道题，测测你是哪一款麦麦快乐。"
     url = f"{PUBLIC}share/{profile['id']}.html"
-    poster = f"{PUBLIC}assets/cards/{profile['id']}.png"
+    thumbnail = f"{PUBLIC}assets/share-icons/{profile['id']}-v1.png"
+    image_alt = profile["name"] + "像素人格图标"
+    page = page.replace("assets/share-icons/home-v1.png", f"assets/share-icons/{profile['id']}-v1.png")
+    page = page.replace('alt="麦麦人格研究所像素薯条图标"', f'alt="{html.escape(image_alt, quote=True)}"')
     escaped = lambda value: html.escape(str(value), quote=True)
     tags = [
         '  <base href="../">',
@@ -154,34 +173,44 @@ def result_html(source: str, profile: dict) -> str:
         f'  <meta property="og:title" content="{escaped(title)}">',
         f'  <meta property="og:description" content="{escaped(description)}">',
         f'  <meta property="og:url" content="{escaped(url)}">',
-        f'  <meta property="og:image" content="{escaped(poster)}">',
+        f'  <meta property="og:image" content="{escaped(thumbnail)}">',
         '  <meta property="og:image:type" content="image/png">',
-        '  <meta property="og:image:width" content="1080">',
-        '  <meta property="og:image:height" content="1440">',
-        f'  <meta property="og:image:alt" content="{escaped(profile["name"] + "像素快乐人格卡")}">',
-        '  <meta name="twitter:card" content="summary_large_image">',
+        '  <meta property="og:image:width" content="320">',
+        '  <meta property="og:image:height" content="320">',
+        f'  <meta property="og:image:alt" content="{escaped(image_alt)}">',
+        '  <meta name="twitter:card" content="summary">',
         f'  <meta name="twitter:title" content="{escaped(title)}">',
         f'  <meta name="twitter:description" content="{escaped(description)}">',
-        f'  <meta name="twitter:image" content="{escaped(poster)}">',
+        f'  <meta name="twitter:image" content="{escaped(thumbnail)}">',
+        f'  <meta name="twitter:image:alt" content="{escaped(image_alt)}">',
     ]
     return re.sub(r"<head\b[^>]*>", lambda match: match.group(0) + "\n" + "\n".join(tags), page, count=1, flags=re.I)
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--metadata-only", action="store_true", help="Build thumbnails/HTML and preserve all existing full-size posters")
+    args = parser.parse_args()
     data = source_data()
-    font_bytes = load_font()
+    font_bytes = None if args.metadata_only else load_font()
     source = (ROOT / "index.html").read_text(encoding="utf-8")
     cards = ROOT / "assets" / "cards"
     pages = ROOT / "share"
+    thumbnails = ROOT / "assets" / "share-icons"
     cards.mkdir(parents=True, exist_ok=True)
     pages.mkdir(parents=True, exist_ok=True)
+    thumbnails.mkdir(parents=True, exist_ok=True)
+    make_thumbnail(data["sprites"]["fries"], thumbnails / "home-v1.png")
     summary = []
     for profile in data["profiles"]:
         poster = cards / f"{profile['id']}.png"
         page = pages / f"{profile['id']}.html"
-        make_poster(profile, data["sprites"][profile["id"]], font_bytes, poster)
+        if not args.metadata_only:
+            make_poster(profile, data["sprites"][profile["id"]], font_bytes, poster)
+        thumbnail = thumbnails / f"{profile['id']}-v1.png"
+        make_thumbnail(data["sprites"][profile["id"]], thumbnail)
         page.write_text(result_html(source, profile), encoding="utf-8", newline="\n")
-        summary.append({"id": profile["id"], "image": str(poster), "dimensions": [1080, 1440], "bytes": poster.stat().st_size, "html_bytes": page.stat().st_size})
+        summary.append({"id": profile["id"], "thumbnail_bytes": thumbnail.stat().st_size, "poster_preserved": args.metadata_only, "html_bytes": page.stat().st_size})
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 
