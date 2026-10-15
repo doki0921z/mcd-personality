@@ -1,4 +1,4 @@
-import {spriteSVG} from './art.js';
+import {spriteSVG} from './art.js?v=20261015-nine1';
 
 let snapshotPromise;
 const chinaDate = () => new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());

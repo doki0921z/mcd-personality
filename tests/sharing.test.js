@@ -5,7 +5,7 @@ import {profiles} from '../data.js';
 import {resultURL,cardURL,thumbnailURL,sharedProfile,makeShareFile,canShareImage} from '../sharing.js';
 const base='https://doki0921z.github.io/mcd-personality/';
 test('all result and image links preserve the GitHub Pages project path',()=>{
-  for(const p of profiles){assert.equal(resultURL(base,p.id),`${base}share/${p.id}.html`);assert.equal(cardURL(base,p.id),`${base}assets/cards/${p.id}.png`);assert.equal(sharedProfile(resultURL(base,p.id)).id,p.id);assert.equal(sharedProfile(`${base}?r=${p.id}`).id,p.id);}
+  for(const p of profiles){assert.equal(resultURL(base,p.id),`${base}share/${p.id}.html`);assert.equal(cardURL(base,p.id),`${base}assets/cards/${p.id}.png?v=20261015-nine1`);assert.equal(sharedProfile(resultURL(base,p.id)).id,p.id);assert.equal(sharedProfile(`${base}?r=${p.id}`).id,p.id);}
   assert.equal(sharedProfile(`${base}share/invalid.html`),undefined);
   assert.throws(()=>resultURL(base,'../../bad'));
   assert.equal(thumbnailURL(base),`${base}assets/share-icons/home-v1.png`);
@@ -32,15 +32,16 @@ test('every shared result has a square preview, a visible image, and a separate 
     assert.match(page,/<meta property="og:image:width" content="320">/);
     assert.match(page,/<meta property="og:image:height" content="320">/);
     assert.match(page,/<meta property="og:image:type" content="image\/png">/);
-    assert.match(page,/<meta name="twitter:image" content="https:[^"]+share-icons\/[a-z]+-v1\.png">/);
+    assert.match(page,/<meta name="twitter:image" content="https:[^"]+share-icons\/[a-z]+-v\d+\.png">/);
     const firstImage=page.match(/<img\b[^>]*>/)?.[0];
     assert.ok(firstImage?.includes('id="brand-image"'));
-    assert.ok(firstImage.includes(`assets/share-icons/${p.id}-v1.png`));
+    const thumbnailFile=new URL(thumbnailURL(base,p.id)).pathname.split('/').pop();
+    assert.ok(firstImage.includes(`assets/share-icons/${thumbnailFile}`));
     assert.doesNotMatch(firstImage,/\bhidden\b|loading="lazy"/);
     assert.ok(page.includes('id="open-poster"'));assert.ok(page.includes('id="share-feedback"'));
     const png=readFileSync(new URL(`../assets/cards/${p.id}.png`,import.meta.url));
     assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png.readUInt32BE(16),1080);assert.equal(png.readUInt32BE(20),1440);
-    const thumbnail=readFileSync(new URL(`../assets/share-icons/${p.id}-v1.png`,import.meta.url));
+    const thumbnail=readFileSync(new URL(`../assets/share-icons/${thumbnailFile}`,import.meta.url));
     assert.equal(thumbnail.subarray(1,4).toString(),'PNG');assert.equal(thumbnail.readUInt32BE(16),320);assert.equal(thumbnail.readUInt32BE(20),320);
   }
 });

@@ -1,4 +1,4 @@
-import {getProfile} from './data.js';
+import {getProfile} from './data.js?v=20261015-nine1';
 
 export const isWeChat = userAgent => /MicroMessenger/i.test(userAgent || '');
 
@@ -9,12 +9,12 @@ export function resultURL(base,id){
 
 export function cardURL(base,id){
   if(!getProfile(id))throw new Error('未知的人格结果');
-  return new URL(`assets/cards/${id}.png`,base).href;
+  return new URL(`assets/cards/${id}.png?v=20261015-nine1`,base).href;
 }
 
 export function thumbnailURL(base,id){
   if(id&&!getProfile(id))throw new Error('未知的人格结果');
-  return new URL(`assets/share-icons/${id||'home'}-v1.png`,base).href;
+  return new URL(`assets/share-icons/${id||'home'}-v${id==='pie'?2:1}.png`,base).href;
 }
 
 export function sharedProfile(url){

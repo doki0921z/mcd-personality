@@ -15,15 +15,16 @@ SPEC = importlib.util.spec_from_file_location("sync_mcd_data", SCRIPT)
 sync = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(sync)
 
-TABLE = """[8]{productName,nutritionDescription,energyKj,energyKcal,protein,fat,carbohydrate,sodium,calcium}:
+TABLE = """[9]{productName,nutritionDescription,energyKj,energyKcal,protein,fat,carbohydrate,sodium,calcium}:
   巨无霸,null,2146,513,27,26,42,961,171
   中薯条,null,1210,289,4,12,38,165,18
   麦乐鸡5块,null,890,213,12,12,13,422,9
   麦辣鸡腿汉堡,null,2029,485,24,24,42,1208,154
   奥利奥麦旋风,null,1115,266,5,9,40,116,185
-  香芋派,null,971,232,2,12,28,159,7
+  菠萝派,null,925,221,2,11,27,147,5
   可乐中杯,null,616,147,0,0,36,0,10
-  冰美式中杯,null,54,13,1,0,2,0,7"""
+  冰美式中杯,null,54,13,1,0,2,0,7
+  麦辣鸡翅-2块,null,937,224,13,15,9,537,13"""
 
 
 def envelope(data):
@@ -65,12 +66,16 @@ class PublicDataTests(unittest.TestCase):
         self.assertEqual(nutrition["coffee"]["energyKcal"], 13)
         self.assertEqual(nutrition["bigmac"]["sodium"], 961)
         self.assertEqual(nutrition["mcflurry"]["calcium"], 185)
+        self.assertEqual(nutrition["pie"]["productName"], "菠萝派")
+        self.assertEqual(nutrition["pie"]["energyKcal"], 221)
+        self.assertEqual(nutrition["wings"]["serving"], "2块")
+        self.assertEqual(nutrition["wings"]["energyKcal"], 224)
 
     def test_missing_product_or_nutrient_is_rejected(self):
-        missing_product = "\n".join(TABLE.splitlines()[:-1]).replace("[8]", "[7]", 1)
+        missing_product = "\n".join(TABLE.splitlines()[:-1]).replace("[9]", "[8]", 1)
         missing_nutrient = TABLE.replace("sodium,", "removed,", 1)
         for table in (missing_product, missing_nutrient, TABLE.replace("2146,513", "2146,null", 1),
-                      TABLE.replace("2146,513", "2146,NaN", 1), TABLE.replace("[8]", "[9]", 1)):
+                      TABLE.replace("2146,513", "2146,NaN", 1), TABLE.replace("[9]", "[10]", 1)):
             with self.subTest(table=table[:80]), self.assertRaises(sync.SyncError):
                 sync.parse_nutrition(envelope(table))
 

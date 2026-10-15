@@ -65,7 +65,7 @@ def make_thumbnail(sprite: list, target: Path) -> None:
     image.save(target, "PNG", optimize=True)
 
 
-def make_poster(profile: dict, sprite: list, font_bytes: bytes, target: Path) -> None:
+def make_poster(profile: dict, sprite: list, font_bytes: bytes, target: Path, profile_count: int) -> None:
     image = Image.new("RGB", (1080, 1440), "#fff6dc")
     draw = ImageDraw.Draw(image)
     fonts = {}
@@ -125,7 +125,7 @@ def make_poster(profile: dict, sprite: list, font_bytes: bytes, target: Path) ->
         draw.line((x, 1090, min(x + 10, 985), 1090), fill="#d7c4a6", width=3)
     text("你是哪一款快乐？", 88, 1171, 34, INK, "left")
     text("扫码看看我的人格，也测测你的", 88, 1220, 24, "#a38a70", "left")
-    text("5 道题 · 8 款人格 · 约 1 分钟", 88, 1259, 24, "#a38a70", "left")
+    text(f"5 道题 · {profile_count} 款人格 · 约 1 分钟", 88, 1259, 24, "#a38a70", "left")
     qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, border=4)
     qr.add_data(f"{PUBLIC}share/{profile['id']}.html", optimize=0)
     qr.make(fit=True)
@@ -158,9 +158,10 @@ def result_html(source: str, profile: dict) -> str:
     title = f"我是{profile['name']}｜麦麦人格研究所"
     description = f"{profile['role']}：{profile['quote']} 5 道题，测测你是哪一款麦麦快乐。"
     url = f"{PUBLIC}share/{profile['id']}.html"
-    thumbnail = f"{PUBLIC}assets/share-icons/{profile['id']}-v1.png"
+    thumbnail_version = 2 if profile["id"] == "pie" else 1
+    thumbnail = f"{PUBLIC}assets/share-icons/{profile['id']}-v{thumbnail_version}.png"
     image_alt = profile["name"] + "像素人格图标"
-    page = page.replace("assets/share-icons/home-v1.png", f"assets/share-icons/{profile['id']}-v1.png")
+    page = page.replace("assets/share-icons/home-v1.png", f"assets/share-icons/{profile['id']}-v{thumbnail_version}.png")
     page = page.replace('alt="麦麦人格研究所像素薯条图标"', f'alt="{html.escape(image_alt, quote=True)}"')
     escaped = lambda value: html.escape(str(value), quote=True)
     tags = [
@@ -206,8 +207,9 @@ def main():
         poster = cards / f"{profile['id']}.png"
         page = pages / f"{profile['id']}.html"
         if not args.metadata_only:
-            make_poster(profile, data["sprites"][profile["id"]], font_bytes, poster)
-        thumbnail = thumbnails / f"{profile['id']}-v1.png"
+            make_poster(profile, data["sprites"][profile["id"]], font_bytes, poster, len(data["profiles"]))
+        thumbnail_version = 2 if profile["id"] == "pie" else 1
+        thumbnail = thumbnails / f"{profile['id']}-v{thumbnail_version}.png"
         make_thumbnail(data["sprites"][profile["id"]], thumbnail)
         page.write_text(result_html(source, profile), encoding="utf-8", newline="\n")
         summary.append({"id": profile["id"], "thumbnail_bytes": thumbnail.stat().st_size, "poster_preserved": args.metadata_only, "html_bytes": page.stat().st_size})

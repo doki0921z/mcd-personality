@@ -59,14 +59,14 @@
       "serving": "1份"
     },
     "pie": {
-      "productName": "香芋派",
-      "energyKcal": 232,
+      "productName": "菠萝派",
+      "energyKcal": 221,
       "protein": 2,
-      "fat": 12,
-      "carbohydrate": 28,
-      "sodium": 159,
-      "calcium": 7,
-      "energyKj": 971,
+      "fat": 11,
+      "carbohydrate": 27,
+      "sodium": 147,
+      "calcium": 5,
+      "energyKj": 925,
       "serving": "1个"
     },
     "cola": {
@@ -90,6 +90,17 @@
       "calcium": 7,
       "energyKj": 54,
       "serving": "中杯"
+    },
+    "wings": {
+      "productName": "麦辣鸡翅-2块",
+      "energyKcal": 224,
+      "protein": 13,
+      "fat": 15,
+      "carbohydrate": 9,
+      "sodium": 537,
+      "calcium": 13,
+      "energyKj": 937,
+      "serving": "2块"
     }
   },
   "calendar": {

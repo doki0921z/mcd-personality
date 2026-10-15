@@ -32,9 +32,10 @@ PROFILE_PRODUCTS = {
     "nuggets": ("麦乐鸡5块", "5块"),
     "spicy": ("麦辣鸡腿汉堡", "1个"),
     "mcflurry": ("奥利奥麦旋风", "1份"),
-    "pie": ("香芋派", "1个"),
+    "pie": ("菠萝派", "1个"),
     "cola": ("可乐中杯", "中杯"),
     "coffee": ("冰美式中杯", "中杯"),
+    "wings": ("麦辣鸡翅-2块", "2块"),
 }
 NUTRIENTS = ("energyKcal", "protein", "fat", "carbohydrate", "sodium", "calcium")
 
