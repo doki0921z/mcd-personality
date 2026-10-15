@@ -19,7 +19,7 @@ function beep(kind='tap'){
 }
 $('#sound-toggle').addEventListener('click',()=>{sound=!sound;try{localStorage.setItem('mcd-sound',sound?'on':'off');}catch{}syncSound();beep();});syncSound();
 function toast(text){clearTimeout(toastTimer);$('#toast').textContent=text;$('#toast').classList.add('visible');toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3000);}
-function focusScreen(){requestAnimationFrame(()=>{app.querySelector('h1')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});});}
+function focusScreen(){app.querySelector('h1')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
 function clearSharedURL(){if(location.search||location.hash)history.replaceState(null,'',location.pathname);}
 function start(){answers=[];step=0;friendResult=false;current=null;clearSharedURL();beep('next');renderQuestion();}
 
