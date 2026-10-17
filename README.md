@@ -26,6 +26,12 @@ GitHub Pages：Settings → Pages → Deploy from a branch → main → / (root)
 
 “立刻下单”跳转到 `https://mcd.cn/` 麦当劳官方点餐，访客在那里登录、选择门店和餐品、确认订单并付款。本站不代下单，也不收集登录信息。此入口不向官方页面预填购物车。营养资料、日历及点餐入口均不进入原有分享海报。
 
+## 麦当劳股价
+
+结果页嵌入 TradingView 免费 Symbol Overview 插件，固定展示 `NYSE:MCD` 的美元股价，支持切换时间范围。保留插件内标识与下方 TradingView 署名，行情可能延迟，不需要账户或 API Key。官方说明：https://www.tradingview.com/widget-docs/widgets/charts/symbol-overview/ 。
+
+图表只在结果页加载，不传递答题内容，不进入分享海报。返回首页或重测会清理旧插件；支持重新加载及常驻的“查看完整行情”链接。嵌入依赖 TradingView 的外部域名，当网络无法访问该服务时可能空白，完整行情链接作为备用入口；不保证中国大陆所有网络均可访问。
+
 ## 验证
 
 分享图片和 HTML 可用 `scripts/build-share-assets.py` 重新生成；需要 Node.js、Python，以及 `scripts/requirements-build.txt` 列出的构建包。可将这些包安装到 `.build/vendor`，不会作为网页运行依赖发布。修改 `data.js`、`art.js`、`index.html` 或部署域名后应重新生成；生成器的 `PUBLIC` 为部署根地址。

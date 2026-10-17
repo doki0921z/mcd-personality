@@ -1,6 +1,7 @@
 import {profiles,questions,calculateResult,getProfile,traitLabels} from './data.js?v=20261015-nine1';
 import {spriteSVG} from './art.js?v=20261015-nine1';
 import {mountMcdInfo} from './mcd-info.js?v=20261015-nine1';
+import {mountStockChart} from './stock-chart.js?v=20261017-stock1';
 import {isWeChat,resultURL,cardURL,thumbnailURL,sharedProfile,makeShareFile,canShareImage} from './sharing.js?v=20261015-nine1';
 
 const app=document.querySelector('#app'),dialog=document.querySelector('#share-dialog');
@@ -13,6 +14,7 @@ const wechat=isWeChat(navigator.userAgent);
 document.querySelector('.brand').href=canonical;
 let answers=[],step=0,current=null,friendResult=false,audioContext=null,posterFile=null,posterURL=null,toastTimer,shareAttempt=0;
 let sound=true;
+let unmountStockChart=()=>{};
 try{sound=localStorage.getItem('mcd-sound')!=='off';}catch{}
 const $=s=>document.querySelector(s);
 function syncSound(){ $('#sound-toggle').setAttribute('aria-pressed',String(sound));$('#sound-toggle').setAttribute('aria-label',sound?'关闭音效':'开启音效');$('#sound-icon').textContent=sound?'♫':'♪';$('#sound-label').textContent=sound?'音效开':'音效关';}
@@ -43,9 +45,10 @@ function syncShareMetadata(profile){
   $('#brand-image').src=image;$('#brand-image').alt=alt;$('#site-icon').href=image;
 }
 function clearSharedURL(){history.replaceState(null,'',new URL(canonical).pathname);syncShareMetadata();}
-function start(){answers=[];step=0;friendResult=false;current=null;clearSharedURL();beep('next');renderQuestion();}
+function start(){unmountStockChart();answers=[];step=0;friendResult=false;current=null;clearSharedURL();beep('next');renderQuestion();}
 
 function renderHome(){
+  unmountStockChart();
   syncShareMetadata();
   app.innerHTML=`<section class="hero screen-enter"><div class="hero-copy"><div class="small-label"><span class="label-dot"></span>今日营业中 · 快乐不限量</div><h1 tabindex="-1">你是哪一款<br><em>麦麦快乐？</em></h1><p class="hero-description">有人像薯条，走到哪里都热热闹闹。<br>有人像菠萝派，把温柔藏在心里。<br><strong>你的灵魂，是什么口味？</strong></p><button type="button" class="button primary start-button" id="start">领取我的快乐人格 <span class="button-arrow" aria-hidden="true">→</span></button><div class="hero-meta"><span>✦ 5 道小问题</span><b>·</b><span>约 1 分钟</span><b>·</b><span>${profiles.length} 款快乐人格</span></div></div><div class="hero-stage"><div class="order-sticker">你的快乐<br><b>已出炉</b></div><div class="arcade"><div class="window-bar"><i></i><i></i><i></i><span>HAPPINESS.EXE</span><b aria-hidden="true">×</b></div><div class="arcade-screen"><div class="screen-message">SELECT YOUR HAPPY SELF</div><div class="spark s1" aria-hidden="true">✦</div><div class="spark s2" aria-hidden="true">+</div><div class="spark s3" aria-hidden="true">✧</div><div class="sprite-float left">${spriteSVG('bigmac')}</div><div class="sprite-float main">${spriteSVG('fries')}</div><div class="sprite-float right">${spriteSVG('mcflurry')}</div><div class="speech">今天也要开心鸭！</div></div><div class="arcade-bottom"><span><span class="mini-heart">♥ ♥ ♥</span> FULL OF JOY</span><span>PRESS START ▶</span></div></div><p class="stage-caption">每一种你，都有专属的可爱。</p></div></section><section class="collection" aria-labelledby="collection-title"><div class="section-header"><h2 id="collection-title"><span aria-hidden="true">✦</span> 快乐图鉴，等待认领</h2><p>${profiles.length} 种口味 · 你会是哪一款？</p></div><div class="product-lineup">${profiles.map((p,i)=>`<div class="product-mini">${spriteSVG(p.id)}<span>${p.name}</span><small>NO. 00${i+1}</small></div>`).join('')}</div><p class="bottom-note">不用成为别人，你本来就很有滋味。</p></section>`;
   $('#start').addEventListener('click',start);
@@ -71,6 +74,7 @@ function confetti(){
   for(let i=0;i<22;i++){const p=document.createElement('i');p.className='confetti';p.style.left=`${i*4.8}%`;p.style.background=['#e95141','#ffd45c','#a4bfa4','#bb9bc1'][i%4];p.style.animationDelay=`${(i%5)*.07}s`;p.style.setProperty('--drift',`${(i%2?1:-1)*(25+i*3)}px`);document.body.append(p);setTimeout(()=>p.remove(),3000);}
 }
 function renderResult(){
+  unmountStockChart();
   const p=current.profile,buddy=getProfile(p.buddy),no=profiles.indexOf(p)+1;
   // The URL is a real, crawlable result document, including on refresh or menu sharing.
   history.replaceState(null,'',shareLink());
@@ -83,7 +87,9 @@ function renderResult(){
   app.querySelector('.result-actions').insertBefore(orderEntry,$('#restart'));
   // Public MCP data is synced separately; visitor answers and account tokens stay out of it.
   const extras=document.createElement('section');
-  app.querySelector('.result-grid').after(extras);
+  const stock=document.createElement('section');
+  app.querySelector('.result-grid').after(stock,extras);
+  unmountStockChart=mountStockChart(stock);
   mountMcdInfo(extras,p);
   if(friendResult)$('#my-test').addEventListener('click',start);else $('#share-result').addEventListener('click',openShare);
   $('#restart').addEventListener('click',()=>{beep();clearSharedURL();renderHome();focusScreen();});
