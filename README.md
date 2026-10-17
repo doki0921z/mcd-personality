@@ -28,9 +28,11 @@ GitHub Pages：Settings → Pages → Deploy from a branch → main → / (root)
 
 ## 麦当劳股价
 
-结果页嵌入 TradingView 免费 Symbol Overview 插件，固定展示 `NYSE:MCD` 的美元股价，支持切换时间范围。保留插件内标识与下方 TradingView 署名，行情可能延迟，不需要账户或 API Key。官方说明：https://www.tradingview.com/widget-docs/widgets/charts/symbol-overview/ 。
+结果页用原生 SVG 绘制 `NYSE:MCD` 美元股价，支持近1个月、3个月、6个月、1年切换，以及触摸、鼠标和键盘滑块查看每日价格。图表、样式与数据均从本站加载，不依赖 TradingView、外部图表脚本、字体 CDN 或访客浏览器跨域请求行情 API，不需要付费图表库、账号或 API Key，也不进入分享海报。
 
-图表只在结果页加载，不传递答题内容，不进入分享海报。返回首页或重测会清理旧插件；支持重新加载及常驻的“查看完整行情”链接。嵌入依赖 TradingView 的外部域名，当网络无法访问该服务时可能空白，完整行情链接作为备用入口；不保证中国大陆所有网络均可访问。
+`assets/mcd-stock-data.json` 保存腾讯财经公开行情中的前复权日收盘参考值（最近320个交易日），来源链接为 https://gu.qq.com/usMCD.N 。页面标注最近交易日、美东日期、同步日期和“非实时”；超过7天未更新时提示数据更新较慢。上游公开接口没有稳定性承诺，接口访问不代表取得商业数据转售授权。
+
+运行 `python scripts/sync-stock-data.py` 更新快照；验证失败时保留上次文件，数据未变化时不改写同步日期。`.github/workflows/refresh-stock.yml` 在北京时间周二至周六09:37尝试刷新，更新成功后提交数据并请求 Pages 重建；也支持手动触发。GitHub 的定时任务可能延迟，数据不是实时行情。这里的图表展示取决于本站可达性，不再依赖访客访问海外行情域名；未宣称完成中国大陆三网测试。
 
 ## 验证
 

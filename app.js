@@ -1,7 +1,7 @@
 import {profiles,questions,calculateResult,getProfile,traitLabels} from './data.js?v=20261015-nine1';
 import {spriteSVG} from './art.js?v=20261015-nine1';
 import {mountMcdInfo} from './mcd-info.js?v=20261015-nine1';
-import {mountStockChart} from './stock-chart.js?v=20261017-stock1';
+import {mountStockChart} from './stock-chart.js?v=20261017-cn1';
 import {isWeChat,resultURL,cardURL,thumbnailURL,sharedProfile,makeShareFile,canShareImage} from './sharing.js?v=20261015-nine1';
 
 const app=document.querySelector('#app'),dialog=document.querySelector('#share-dialog');
